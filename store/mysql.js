@@ -65,7 +65,6 @@ async function get_data(tabla, id) {
 }
 
 async function upsert(tabla, data) {
-
   return insert(tabla, data);
 }
 
@@ -75,9 +74,6 @@ async function insert(tabla, data) {
   return new Promise((resolve, reject) => {
     connection.query(query, data, (err, result) => {
       if (err) reject(err);
-
-      console.log("INSERT: ");
-      console.log(result);
 
       resolve(result);
     });
@@ -97,6 +93,18 @@ async function update(tabla, data) {
   });
 }
 
+async function deleteById(table, id) {
+  const query = `DELETE FROM ${table} WHERE id = ?`;
+
+  return new Promise((resolve, reject) => {
+    connection.query(query, [id], (err, result) => {
+      if (err) reject(err);
+
+      resolve(result);
+    });
+  });
+}
+
 async function query(tabla, data) {
   const query = `SELECT*FROM ${tabla} WHERE ?`;
 
@@ -109,11 +117,24 @@ async function query(tabla, data) {
   });
 }
 
+async function myQuery(query) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, (err, result) => {
+      if (err) reject(err);
+
+      console.log(result);
+      resolve(result);
+    });
+  });
+}
+
 module.exports = {
   list,
   get_data,
   upsert,
   query,
   insert,
-  update
+  update,
+  myQuery,
+  deleteById,
 };
